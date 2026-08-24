@@ -1,63 +1,98 @@
 # Hilt
 
-An MVVM framework for TypeScript. A view-model lifecycle you can reason about, commands that carry
-their own state, and platform adapters that keep the renderer out of your business logic.
+MVVM for TypeScript, taken seriously. Screens with a real lifecycle, commands that carry their own
+state, conductors that own their children, and platform adapters that keep the renderer out of your
+application logic.
 
 > Not [Hilt for Android](https://dagger.dev/hilt/). Same word, different ecosystem.
+
+## The short version
+
+I come from WPF, Silverlight and UWP. In that world you built applications with MVVM, and
+[Caliburn.Micro](https://caliburnmicro.com/) was the framework that did it best. A screen knew when
+it was activated and when it was closed. A conductor owned its children. Screens talked to each
+other through an event aggregator instead of holding references. A view-model could open a dialog
+without knowing what a window was.
+
+When I moved to TypeScript, none of that existed as one thing. The pieces were spread across many
+libraries, each solving one of them, and none of them handled lifecycle the same way. So I wrote it
+myself, inside an application I was already shipping. This repository is that code, taken back out.
+
+I build applications that are large and have to keep working for years, and two things follow from
+that.
+
+**Folders are not architecture.** React projects are usually organised by feature folders, and that
+gets called the architecture. Nothing enforces it. A rule that is only a convention gets broken the
+first time someone is in a hurry, and nobody notices until much later. A boundary is only real if
+crossing it fails the build.
+
+**UI frameworks are technical debt by default.** I shipped products on Silverlight and on UWP.
+Microsoft ended both. JavaScript is no different: Next.js changed its own model, Remix became React
+Router, and the recommended way to do most things has been replaced more than once. So I assume that
+whatever UI framework I pick will change or die, and I keep the code that took longest to write out
+of its reach.
+
+That is what Hilt is for. View-models are plain TypeScript objects with a lifecycle, and they do not
+import React. When the UI framework changes, I replace an adapter and the application logic stays
+where it is.
+
+The long version, with the code, is in [`packages/core/README.md`](packages/core/README.md).
 
 ## Packages
 
 | Package | Status | |
 | --- | --- | --- |
-| [`@hiltjs/core`](packages/core) | `0.1` | The MVVM kernel — lifecycle, commands, reactive properties, conductors, event bus. Depends only on RxJS. |
-| `@hiltjs/react` | extracting | React binding — hooks, provider, view locator, dialog host. |
-| `@hiltjs/expo` | extracting | Expo Router adapter — VM-first navigation, route registry, transitions. |
+| [`@hiltjs/core`](packages/core) | `0.1` | The kernel. Lifecycle, commands, reactive properties, conductors, event bus, dialog and navigation seams. Depends only on RxJS. |
+| `@hiltjs/react` | extracting | React binding. Hooks, provider, view locator, dialog host. |
+| `@hiltjs/expo` | extracting | Expo Router adapter. VM-first navigation, route registry, transitions. |
 
-Start with [`packages/core/README.md`](packages/core/README.md).
+## Why the packages arrive one at a time
 
-## Why it exists
+Hilt did not start as a library. It grew as the kernel of a production universal application, one
+codebase across iOS, Android and web, where several hundred source files hang off it and the tests
+were written next to real features instead of bolted on afterwards.
 
-Hilt did not start as a library. It grew as the kernel of a production universal application —
-one codebase across iOS, Android and web — where several hundred source files hang off it and its
-test suite was written alongside real features rather than retrofitted afterwards.
+That is the good part, and it is also the reason this is being extracted in stages. The kernel is
+already free of that application. The React adapter is not: half of it is framework, and half is
+chrome written against a specific UI library. The Expo adapter still borrows animation constants
+from that application's design system.
 
-That origin is the point. The lifecycle contract, the conductors and the dialog and navigation
-seams exist because screens in that application needed them and the alternatives were tried first.
-It is also why extraction is happening in stages: the core is already free of that application,
-and the adapters are not yet.
+Publishing all three today would mean either shipping that coupling to you, or deciding how to
+remove it in an afternoon because a release was waiting. Neither is a good trade, and the kernel is
+useful on its own in the meantime.
 
-## Repository
-
-```
-packages/core/     @hiltjs/core — the kernel
-```
-
-`@hiltjs/core` runs on **Node 20+** — that is what `engines` promises consumers, and CI proves it
-by typechecking and testing on that floor. Building it needs **Node 22.18+**, because the bundler
-does; the two are separate CI jobs for exactly that reason.
+## Working on it
 
 ```sh
 pnpm install
 pnpm run check     # typecheck, test, build
 ```
 
+`@hiltjs/core` runs on **Node 20+**. That is what `engines` promises, and CI proves it by
+typechecking and running the suite on that floor. Building needs **Node 22.18+**, because the
+bundler does. They are separate CI jobs for exactly that reason.
+
 Per-package scripts: `build`, `test`, `test:watch`, `typecheck`.
+
+CI also typechecks the example printed in the package README, so it cannot quietly rot, and it
+checks the packed tarball itself rather than trusting the config: no sources or tests inside, RxJS
+left external, and both entry points actually importable.
 
 ## Roadmap
 
-1. **`@hiltjs/core`** — done; the package builds, and its suite runs in plain Node.
-2. **`@hiltjs/react`** — the headless hooks and container wiring separate from the Tamagui-bound
-   chrome they currently ship alongside. That separation is the open design question.
-3. **`@hiltjs/expo`** — once the adapter stops taking motion constants from the application's
-   design system.
-4. **Architecture fitness tests and a feature generator** — the pieces that make this a framework
-   with an opinion rather than another state library. They exist, but they encode one
-   application's module structure today.
+1. **`@hiltjs/core`.** Done. Builds, and its suite runs in plain Node.
+2. **`@hiltjs/react`.** Split the headless hooks and container wiring away from the UI-library-bound
+   chrome they currently ship with. That split is the open design question, not a chore.
+3. **`@hiltjs/expo`.** Once the adapter stops reaching into an application's design system.
+4. **Architecture fitness tests and a feature generator.** These are the pieces that make Hilt a
+   framework with an opinion instead of another state library: tests that fail when a view-model
+   grows a shape it shouldn't, and a generator that scaffolds the canonical one. They exist. They
+   currently encode one application's module structure, which is why they are last.
 
 ## Stability
 
-Everything here is `0.x`: a minor version may contain a breaking change. In exchange, no breaking
-change ships without a changelog entry naming it and a note describing the edit required.
+Everything here is `0.x`, so a minor version may contain a breaking change. In exchange, no breaking
+change ships without a changelog entry naming it and a note describing the edit you'll need to make.
 
 ## License
 

@@ -37,3 +37,4 @@ const vm = new ContactSearchViewModel(new RxEventBus());
 void vm.activate();
 vm.results.changes$.subscribe((rows) => console.log(rows.length));
 vm.search.isExecuting$.subscribe((busy) => console.log(busy));
+vm.search.errors$.subscribe((errors) => console.log(errors.isEmpty));

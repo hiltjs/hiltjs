@@ -1,5 +1,5 @@
 /**
- * Hilt — a small MVVM core for TypeScript applications.
+ * Hilt: a small MVVM core for TypeScript applications.
  *
  * Inspired by Caliburn.Micro's lifecycle contract (Activate / Deactivate)
  * and adapted to TypeScript + RxJS conventions. The grip ("hilt") on
