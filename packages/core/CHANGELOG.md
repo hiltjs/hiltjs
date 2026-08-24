@@ -1,5 +1,13 @@
 # @hiltjs/core
 
+## 0.1.2
+
+### Patch Changes
+
+- [`fa8e85b`](https://github.com/hiltjs/hiltjs/commit/fa8e85b7c00014e5cbebd062f6c0c4926dd3219f) - Point `repository`, `bugs` and `homepage` at the project's own organisation,
+  `github.com/hiltjs/hiltjs`. GitHub redirects the previous location, but the
+  manifest should name where the project actually lives.
+
 ## 0.1.1
 
 ### Patch Changes
