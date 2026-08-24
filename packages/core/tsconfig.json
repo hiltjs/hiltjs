@@ -1,0 +1,7 @@
+{
+  "extends": "../../tsconfig.base.json",
+  // `tsc` here only ever typechecks — tsdown produces the build — so there is
+  // no rootDir/outDir. `examples/` is included on purpose: it holds the code
+  // printed in README.md, so a stale example fails the build.
+  "include": ["src/**/*.ts", "examples/**/*.ts"]
+}

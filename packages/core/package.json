@@ -1,0 +1,58 @@
+{
+  "name": "@hiltjs/core",
+  "version": "0.1.0",
+  "description": "A small MVVM core for TypeScript: view-model lifecycle, commands, reactive properties, conductors and an event bus, built on RxJS.",
+  "keywords": [
+    "mvvm",
+    "view-model",
+    "rxjs",
+    "reactive",
+    "command",
+    "event-bus",
+    "typescript",
+    "architecture"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rick-dev-creator/hiltjs.git",
+    "directory": "packages/core"
+  },
+  "bugs": "https://github.com/rick-dev-creator/hiltjs/issues",
+  "homepage": "https://github.com/rick-dev-creator/hiltjs#readme",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "rxjs": "^7.8.0"
+  },
+  "devDependencies": {
+    "rxjs": "^7.8.2",
+    "tsdown": "^0.22.14",
+    "typescript": "^6.0.3",
+    "unrun": "^0.3.1",
+    "vitest": "^4.1.11"
+  }
+}
