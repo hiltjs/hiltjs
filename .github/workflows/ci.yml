@@ -10,8 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # What the LIBRARY supports. `@hiltjs/core` declares `engines: node >=20`, so
-  # its sources have to typecheck and its suite has to pass on that floor.
+  # What the library supports: `engines` promises Node 20.
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -29,24 +28,13 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Typechecks the sources AND the examples, so a snippet that no longer
-      # compiles fails here rather than in someone's editor.
       - run: pnpm run typecheck
-
       - run: pnpm run lint
-
       - run: pnpm run format:check
-
-      # Compiling the examples proves they are valid. This proves the READMEs
-      # actually print them, which is the part a reader copies.
       - run: pnpm run check:examples
-
       - run: pnpm run test
 
-  # What the TOOLCHAIN needs, which is a different question: tsdown declares
-  # `engines: ^22.18.0 || >=24.11.0` and calls `Promise.withResolvers`, absent
-  # before Node 22. Building on the library's floor fails for reasons that say
-  # nothing about the library, so the build gets its own job.
+  # What the toolchain needs: tsdown declares `engines: ^22.18.0 || >=24.11.0`.
   build:
     runs-on: ubuntu-latest
     steps:
@@ -60,13 +48,10 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
 
-      # The published artifact is what consumers actually get. Assert its
-      # properties on the artifact itself rather than trusting the config.
       - name: Verify the publishable package
         working-directory: packages/core
         run: |
           pnpm pack --pack-destination /tmp
-          echo '--- tarball contents ---'
           tar -tzf /tmp/hiltjs-core-*.tgz
           if tar -tzf /tmp/hiltjs-core-*.tgz | grep -qE '\.test\.|/src/'; then
             echo 'ERROR: tests or sources leaked into the tarball'; exit 1
@@ -75,8 +60,6 @@ jobs:
             echo 'ERROR: rxjs was inlined instead of left as a peer import'; exit 1
           fi
 
-      # Both entry points must load and expose the surface. A build that emits
-      # files nobody can import is still a green build.
       - name: Smoke-test both entry points
         working-directory: packages/core
         run: |

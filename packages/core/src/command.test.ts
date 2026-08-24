@@ -226,7 +226,7 @@ describe('AsyncCommand', () => {
   });
 
   it('treats a handler that ignores the signal but where signal is aborted as ABORTED', async () => {
-    // Handler doesn't check the signal — it just resolves. The post-await check
+    // Handler doesn't check the signal: it just resolves. The post-await check
     // on signal.aborted should still classify the run as aborted.
     const cmd = new AsyncCommand<void, string>(
       async () =>

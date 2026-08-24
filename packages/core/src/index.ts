@@ -1,16 +1,4 @@
-/**
- * Hilt: a small MVVM core for TypeScript applications.
- *
- * Inspired by Caliburn.Micro's lifecycle contract (Activate / Deactivate)
- * and adapted to TypeScript + RxJS conventions. The grip ("hilt") on
- * which views, commands, events and errors hang.
- *
- * Public surface:
- *   - {@link ViewModel} / {@link ViewModelBase}
- *   - {@link Command} + {@link RelayCommand} / {@link AsyncCommand}
- *   - {@link EventBus} / {@link RxEventBus} / {@link eventToken}
- *   - {@link AppError} / {@link ErrorCollection} / {@link OperationResult}
- */
+/** Hilt: a small MVVM core for TypeScript applications. */
 
 export type { AppError, ErrorSeverity, OperationResult } from './errors';
 export { ErrorCollection, Fail, Ok } from './errors';
@@ -39,9 +27,6 @@ export { ConductorAllActive, ConductorOneActive } from './conductor';
 export type { ReactivePropertyOptions } from './reactive-property';
 export { ReactiveProperty } from './reactive-property';
 
-// A DI token is an IDENTITY, not a container feature, so the kernel owns it:
-// `FoldSlot.viewToken` needs the type, and a container adapter is an optional
-// add-on. Container packages import `Token` from here rather than redeclaring it.
 export type { Token } from './token';
 export { token } from './token';
 

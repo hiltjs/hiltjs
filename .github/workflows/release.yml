@@ -11,8 +11,7 @@ concurrency:
 permissions:
   contents: write
   pull-requests: write
-  # Required for npm provenance. Without it the packages still publish, but
-  # without the signed link back to the commit and workflow that produced them.
+  # OIDC. There is no npm token: npmjs.com trusts this repo and this filename.
   id-token: write
 
 jobs:
@@ -27,27 +26,51 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          # The bundler needs 22.18+; see the note in ci.yml.
           node-version: 24
           cache: pnpm
-          registry-url: https://registry.npmjs.org
 
       - run: pnpm install --frozen-lockfile
-
-      # Publishing something that does not pass its own gate would be worse
-      # than not publishing at all.
       - run: pnpm run check
 
-      # Two modes, decided by whether unreleased changesets exist:
-      #   - some exist   -> open or update the "Version Packages" pull request
-      #   - none exist   -> the version PR was merged, so publish
-      - uses: changesets/action@v1
+      # No `publish` input: changesets would run it through pnpm, which cannot
+      # do OIDC publishing yet (pnpm/pnpm#9812).
+      - name: Version pull request
+        id: changesets
+        uses: changesets/action@v1
         with:
           version: pnpm run version-packages
-          publish: pnpm run release
           commit: 'Version packages'
           title: 'Version packages'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
+
+      - name: Publish to npm
+        if: steps.changesets.outputs.hasChangesets == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          # Trusted publishing needs npm >= 11.5.1.
+          npm install -g npm@latest
+
+          VERSION=$(node -p "require('./packages/core/package.json').version")
+          TAG="@hiltjs/core@${VERSION}"
+
+          if npm view "@hiltjs/core@${VERSION}" version >/dev/null 2>&1; then
+            echo "${TAG} is already on the registry."
+            exit 0
+          fi
+
+          pnpm run build
+          npm publish ./packages/core --provenance --access public
+
+          git tag -a "${TAG}" -m "Release ${TAG}"
+          git push origin "${TAG}"
+
+          node -e "
+            const fs = require('node:fs');
+            const section = fs.readFileSync('packages/core/CHANGELOG.md', 'utf8').split(/^## /m)[1] ?? '';
+            fs.writeFileSync('/tmp/notes.md', section.split('\n').slice(1).join('\n').trim());
+          "
+          gh release create "${TAG}" --title "${TAG}" --notes-file /tmp/notes.md

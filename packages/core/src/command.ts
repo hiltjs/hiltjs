@@ -3,22 +3,7 @@ import { BehaviorSubject, combineLatest, map, of } from 'rxjs';
 
 import { ErrorCollection, Fail, Ok, type OperationResult } from './errors';
 
-/**
- * Reactive replacement for WPF's `ICommand`. Three observable signals
- * cover what a view typically needs to bind:
- *
- * - `canExecute$`   — should the trigger be enabled?
- * - `isExecuting$`  — is the command running right now? (loading state)
- * - `errors$`       — last execution's failures, if any
- *
- * `execute` returns an {@link OperationResult} so callers can react to
- * success/failure without subscribing to `errors$`.
- *
- * `dispose()` aborts any in-flight execution (async commands) and
- * completes the underlying subjects. The command also implements
- * `Unsubscribable` so it can be added directly to an RxJS `Subscription`
- * sink — typically `viewModelBase.disposables.add(myCommand)`.
- */
+/** Reactive replacement for WPF's `ICommand`. */
 export interface Command<TParam = void, TResult = void> extends Unsubscribable {
   readonly canExecute$: Observable<boolean>;
   readonly isExecuting$: Observable<boolean>;
@@ -29,10 +14,7 @@ export interface Command<TParam = void, TResult = void> extends Unsubscribable {
 }
 
 export interface CommandOptions {
-  /**
-   * External gate — typically derived from the owning ViewModel's state.
-   * The effective `canExecute$` is `external && !isExecuting`.
-   */
+  /** External gate: typically derived from the owning ViewModel's state. */
   readonly canExecute$?: Observable<boolean>;
 }
 
@@ -67,7 +49,7 @@ abstract class CommandBase<TParam, TResult> implements Command<TParam, TResult> 
 
   abstract execute(param: TParam): Promise<OperationResult<TResult>>;
 
-  /** Alias for `dispose()` — lets the command slot into an RxJS sink. */
+  /** Alias for `dispose()`: lets the command slot into an RxJS sink. */
   unsubscribe(): void {
     this.dispose();
   }
@@ -83,19 +65,13 @@ abstract class CommandBase<TParam, TResult> implements Command<TParam, TResult> 
   }
 
   protected captureError(thrown: unknown): ErrorCollection {
-    // Allow handlers to throw an ErrorCollection directly to propagate
-    // structured validation failures without wrapping.
     return thrown instanceof ErrorCollection
       ? thrown
       : ErrorCollection.fromException(thrown, 'COMMAND.EXECUTION_FAILED');
   }
 }
 
-/**
- * Synchronous command. Fast operations that don't need loading state
- * (reset filters, navigate locally, toggle a flag). Throws still flow
- * through {@link OperationResult}.
- */
+/** Synchronous command. */
 export class RelayCommand<TParam = void> extends CommandBase<TParam, void> {
   constructor(
     private readonly run: (param: TParam) => void,
@@ -124,42 +100,17 @@ export class RelayCommand<TParam = void> extends CommandBase<TParam, void> {
   }
 }
 
-/**
- * Context object passed as the second argument to an {@link AsyncCommand}'s
- * handler. The `signal` is wired to an internal `AbortController` so the
- * handler can forward it to `fetch`, `Request`, or any cancellation-aware
- * API. The signal is aborted when:
- *
- *   - `dispose()` is called (typically from the owning VM's disposal)
- *   - a new `execute()` arrives in 'switch' concurrency mode
- */
+/** Context object passed as the second argument to an {@link AsyncCommand}'s handler. */
 export interface AsyncCommandContext {
   readonly signal: AbortSignal;
 }
 
 export interface AsyncCommandOptions extends CommandOptions {
-  /**
-   * Behavior when `execute()` is called while a previous run is in flight:
-   *
-   *   - `'reject'` (default) — return a `COMMAND.ALREADY_EXECUTING` warning
-   *     immediately and leave the in-flight run untouched.
-   *   - `'switch'`           — abort the in-flight run via its `AbortSignal`
-   *     and start a new one. Useful for autocomplete-style commands where
-   *     only the latest input matters.
-   */
+  /** Behavior when `execute()` is called while a previous run is in flight: - `'reject'` (default): return a `COMMAND.ALREADY_EXECUTING` warning immediately and leave the in-flight run untouched. */
   readonly concurrency?: 'reject' | 'switch';
 }
 
-/**
- * Asynchronous command. The handler returns a plain `Promise<TResult>`;
- * thrown values are converted to {@link ErrorCollection}. Handlers can
- * also throw an {@link ErrorCollection} directly to surface structured
- * validation failures with multiple fields.
- *
- * Handlers receive an {@link AsyncCommandContext} with an `AbortSignal`
- * — forward it to `fetch` etc. so cancellation cleans up real I/O when
- * the command is disposed or switched.
- */
+/** Asynchronous command. */
 export class AsyncCommand<TParam = void, TResult = void> extends CommandBase<TParam, TResult> {
   private readonly concurrency: 'reject' | 'switch';
   private currentController: AbortController | null = null;
@@ -177,8 +128,6 @@ export class AsyncCommand<TParam = void, TResult = void> extends CommandBase<TPa
       if (this.concurrency === 'reject') {
         return Fail<TResult>(ALREADY_EXECUTING);
       }
-      // 'switch' — abort the in-flight run; its `await` will throw, then
-      // hit the catch block below and resolve as `COMMAND.ABORTED`.
       this.currentController?.abort();
     }
 
@@ -189,8 +138,6 @@ export class AsyncCommand<TParam = void, TResult = void> extends CommandBase<TPa
 
     try {
       const value = await this.run(param, { signal: controller.signal });
-      // The handler may not propagate the signal (or may swallow the abort
-      // mid-await). Trust the signal as the authoritative source.
       if (controller.signal.aborted) {
         return Fail<TResult>(ABORTED());
       }
@@ -203,8 +150,6 @@ export class AsyncCommand<TParam = void, TResult = void> extends CommandBase<TPa
       this._errors$.next(errors);
       return Fail(errors);
     } finally {
-      // Only flip flags if we're still the current run — a 'switch' may
-      // have already replaced us with a newer execution.
       if (this.currentController === controller) {
         this.currentController = null;
         if (!this._isExecuting$.closed) {
@@ -224,7 +169,6 @@ export class AsyncCommand<TParam = void, TResult = void> extends CommandBase<TPa
   private isAbortError(e: unknown, signal: AbortSignal): boolean {
     if (signal.aborted) return true;
     if (e instanceof Error && e.name === 'AbortError') return true;
-    // DOMException wrapping aborted on some platforms
     if (
       typeof DOMException !== 'undefined' &&
       e instanceof DOMException &&

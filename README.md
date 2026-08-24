@@ -1,10 +1,26 @@
 # Hilt
 
+[![npm](https://img.shields.io/npm/v/@hiltjs/core?logo=npm&color=cb3837)](https://www.npmjs.com/package/@hiltjs/core)
+[![CI](https://github.com/rick-dev-creator/hiltjs/actions/workflows/ci.yml/badge.svg)](https://github.com/rick-dev-creator/hiltjs/actions/workflows/ci.yml)
+[![license](https://img.shields.io/npm/l/@hiltjs/core)](LICENSE)
+
 MVVM for TypeScript, taken seriously. Screens with a real lifecycle, commands that carry their own
 state, conductors that own their children, and platform adapters that keep the renderer out of your
 application logic.
 
+**Inspired by [Caliburn.Micro](https://caliburnmicro.com/)**, whose lifecycle contract it carries
+over from WPF, Silverlight and UWP into TypeScript and RxJS.
+
 > Not [Hilt for Android](https://dagger.dev/hilt/). Same word, different ecosystem.
+
+## Install
+
+```sh
+npm install @hiltjs/core rxjs
+```
+
+RxJS is a peer dependency, not a direct one: its types are part of the public API, so there has to
+be exactly one copy in your tree and you are the one who picks it.
 
 ## The short version
 

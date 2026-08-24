@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { token } from './token';
 import { assertFoldSlots, type FoldSlot } from './fold';
 
-/** A minimal well-formed slot — key + view token + a thunk onto its own child VM. */
+/** A minimal well-formed slot: key + view token + a thunk onto its own child VM. */
 const slot = (key: string): FoldSlot => ({
   key,
   viewToken: token<unknown>(`view.${key}`),

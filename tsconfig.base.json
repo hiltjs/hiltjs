@@ -1,10 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    // DOM is here for the WHATWG globals the kernel genuinely uses:
-    // AbortController, AbortSignal, DOMException, timers. It is NOT here
-    // because any package touches the document. Nothing under packages/ may
-    // reference `window` or `document`; the build is platform-neutral.
+    // DOM only for AbortController/AbortSignal/DOMException/timers.
+    // No package may reference `window` or `document`.
     "lib": ["ES2022", "DOM"],
     "module": "ESNext",
     "moduleResolution": "bundler",

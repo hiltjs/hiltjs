@@ -4,25 +4,12 @@ import { BehaviorSubject } from 'rxjs';
 import type { DeactivationKind, ViewModel } from './view-model';
 import { ViewModelBase } from './view-model-base';
 
-/**
- * A ViewModel that owns child ViewModels and propagates lifecycle to
- * them. Comes in two flavors with different activation semantics:
- *
- *   - {@link ConductorOneActive}  — one active child at a time
- *     (tabs, wizards, single-pane sub-navigation)
- *   - {@link ConductorAllActive}  — all children active in parallel
- *     (composite screens — workspace with MessageList + Composer +
- *     TypingIndicator running together)
- *
- * `closeItem` removes the child for good (calls `deactivate('closing')`
- * which in turn calls `dispose` on the child). For temporary swaps —
- * suspend a wizard step, switch tabs — use `activateItem` directly.
- */
+/** A ViewModel that owns child ViewModels and propagates lifecycle to them. */
 export interface Conductor<T extends ViewModel> extends ViewModel {
   readonly items$: Observable<readonly T[]>;
   readonly items: readonly T[];
 
-  /** Permanently remove `item`. The child's lifecycle gets the `closing` kind. */
+  /** Permanently remove `item`. */
   closeItem(item: T): Promise<void>;
 }
 
@@ -53,13 +40,7 @@ abstract class ConductorBase<T extends ViewModel> extends ViewModelBase implemen
   }
 }
 
-/**
- * One active child at a time.
- *
- * Activating a different item suspends the current one with
- * `deactivate('temporary')` — its state is preserved so the user can
- * come back. Use {@link closeItem} to permanently dismiss.
- */
+/** One active child at a time. */
 export class ConductorOneActive<T extends ViewModel> extends ConductorBase<T> {
   private readonly _activeItem$ = new BehaviorSubject<T | null>(null);
 
@@ -69,18 +50,12 @@ export class ConductorOneActive<T extends ViewModel> extends ConductorBase<T> {
     return this._activeItem$.value;
   }
 
-  /**
-   * Make `item` the active child. Registers it if new. If a different
-   * child was active, asks it `canDeactivate()` first; on veto the
-   * switch is cancelled and the current child stays active.
-   */
+  /** Make `item` the active child. */
   async activateItem(item: T): Promise<void> {
     this.addItemToList(item);
 
     const current = this._activeItem$.value;
     if (current === item) {
-      // Item is already active conceptually; ensure it's truly activated
-      // (e.g., conductor was just activated for the first time).
       if (this.isActive) await item.activate();
       return;
     }
@@ -97,11 +72,7 @@ export class ConductorOneActive<T extends ViewModel> extends ConductorBase<T> {
     }
   }
 
-  /**
-   * Permanently dismiss a child. Honors `canDeactivate()` — a child with
-   * unsaved changes can refuse to close. If it was the active child, the
-   * conductor falls back to the most recently added remaining item.
-   */
+  /** Permanently dismiss a child. */
   override async closeItem(item: T): Promise<void> {
     if (!this._items$.value.includes(item)) return;
 
@@ -113,7 +84,6 @@ export class ConductorOneActive<T extends ViewModel> extends ConductorBase<T> {
     this.removeItemFromList(item);
 
     if (wasActive) {
-      // Pick the most recently added remaining item, or null if empty.
       const remaining = this._items$.value;
       const next = remaining.length > 0 ? remaining[remaining.length - 1] : null;
       this._activeItem$.next(next ?? null);
@@ -130,8 +100,6 @@ export class ConductorOneActive<T extends ViewModel> extends ConductorBase<T> {
 
   protected override async onDeactivate(kind: DeactivationKind): Promise<void> {
     if (kind === 'closing') {
-      // Tear down every child, not just the active one — the conductor
-      // is going away for good.
       for (const item of [...this._items$.value]) {
         await item.deactivate('closing');
       }
@@ -150,18 +118,9 @@ export class ConductorOneActive<T extends ViewModel> extends ConductorBase<T> {
   }
 }
 
-/**
- * All children active simultaneously.
- *
- * Adding an item activates it immediately if the conductor is active.
- * Suitable for composite screens where each sub-VM has independent
- * concerns but should run as a group.
- */
+/** All children active simultaneously. */
 export class ConductorAllActive<T extends ViewModel> extends ConductorBase<T> {
-  /**
-   * Register an item and activate it (if the conductor is active).
-   * No-op when the item is already registered.
-   */
+  /** Register an item and activate it (if the conductor is active). */
   async addItem(item: T): Promise<void> {
     const alreadyPresent = this._items$.value.includes(item);
     if (!alreadyPresent) {

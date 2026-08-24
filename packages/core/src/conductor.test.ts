@@ -65,7 +65,7 @@ describe('ConductorOneActive', () => {
     expect(conductor.activeItem).toBe(b);
   });
 
-  it('canDeactivate veto cancels the switch — current child stays active', async () => {
+  it('canDeactivate veto cancels the switch: current child stays active', async () => {
     const conductor = new ConductorOneActive<ChildVM>();
     await conductor.activate();
     const a = new ChildVM();
@@ -228,7 +228,7 @@ describe('ConductorAllActive', () => {
   });
 });
 
-describe('Conductor — items$ stream', () => {
+describe('Conductor: items$ stream', () => {
   it('emits the current items list on subscribe and after each change', async () => {
     const conductor = new ConductorAllActive<ChildVM>();
     const seenLengths: number[] = [];
@@ -241,8 +241,8 @@ describe('Conductor — items$ stream', () => {
   });
 });
 
-describe('Conductor — propertyChanged$ from VM base', () => {
-  it("ignores child events — conductor's own propertyChanged$ stays clean", async () => {
+describe('Conductor: propertyChanged$ from VM base', () => {
+  it("ignores child events: conductor's own propertyChanged$ stays clean", async () => {
     const conductor = new ConductorOneActive<ChildVM>();
     const handler = vi.fn();
     conductor.propertyChanged$.subscribe(handler);

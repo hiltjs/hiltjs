@@ -6,7 +6,11 @@ right now, whether it is running, and what went wrong when it didn't. A conducto
 and their lifecycles nest inside its own.
 
 If that vocabulary sounds familiar, you probably wrote XAML at some point. That is exactly where it
-comes from.
+comes from: Hilt is **inspired by [Caliburn.Micro](https://caliburnmicro.com/)** and carries its
+lifecycle contract over into TypeScript.
+
+[![npm](https://img.shields.io/npm/v/@hiltjs/core?logo=npm&color=cb3837)](https://www.npmjs.com/package/@hiltjs/core)
+[![CI](https://github.com/rick-dev-creator/hiltjs/actions/workflows/ci.yml/badge.svg)](https://github.com/rick-dev-creator/hiltjs/actions/workflows/ci.yml)
 
 > Not [Hilt for Android](https://dagger.dev/hilt/). Same word, different ecosystem.
 

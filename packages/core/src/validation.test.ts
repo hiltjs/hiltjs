@@ -10,7 +10,7 @@ const only = (value: string, code: string): Spec => ({
 const A = only('a', 'fail.a');
 const B = only('b', 'fail.b');
 
-describe('all — AND, first failure wins', () => {
+describe('all: AND, first failure wins', () => {
   it('is satisfied when every spec is', () => {
     expect(all(A, A).validate('a')).toBeNull();
   });
@@ -25,12 +25,12 @@ describe('all — AND, first failure wins', () => {
   });
 });
 
-// `any` is what lets a rule have two independent ways through — the composition
+// `any` is what lets a rule have two independent ways through: the composition
 // behind "your own conversation OR you supervise the agent holding it". Its
 // failure semantics are the mirror of `all`'s and are load-bearing: a caller
 // that is denied on BOTH branches gets the LAST spec's code, so argument order
 // decides which reason surfaces.
-describe('any — OR, last failure wins', () => {
+describe('any: OR, last failure wins', () => {
   it('is satisfied when the FIRST spec is, without evaluating the rest', () => {
     let touched = false;
     const tripwire: Spec = {
@@ -57,7 +57,7 @@ describe('any — OR, last failure wins', () => {
   });
 });
 
-describe('not — negation needs its own code', () => {
+describe('not: negation needs its own code', () => {
   it('is satisfied when the negated spec FAILS', () => {
     expect(not(A, 'fail.notA').validate('z')).toBeNull();
   });
@@ -77,7 +77,7 @@ describe('not — negation needs its own code', () => {
   });
 });
 
-describe('matches — the trimmed shape check', () => {
+describe('matches: the trimmed shape check', () => {
   it('trims before testing', () => {
     expect(matches(/^\d{6}$/).validate('  123456  ')).toBeNull();
   });

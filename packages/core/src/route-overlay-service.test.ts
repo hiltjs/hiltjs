@@ -40,7 +40,7 @@ describe('RouteOverlayService', () => {
 
     sut.close();
 
-    // Only the initial replay — no extra emission.
+    // Only the initial replay: no extra emission.
     expect(emissions).toEqual([null]);
   });
 
@@ -50,7 +50,7 @@ describe('RouteOverlayService', () => {
 
     const emissions: (string | null)[] = [];
     sut.active$.subscribe((v) => emissions.push(v));
-    // Today only `'chat'` exists — re-open of the same kind asserts
+    // Today only `'chat'` exists: re-open of the same kind asserts
     // the surface is permissive (the BehaviorSubject deduplicates
     // identical values, so this is a no-op emission). When future
     // kinds land the second-open-replaces-first contract is the

@@ -1,14 +1,6 @@
-// Asserts that every code sample printed in a package README is the exact code
-// that CI compiles.
-//
-// Typechecking `examples/` proves the samples are valid. It does not prove the
-// README shows them: the two could drift, and the README is the copy people
-// actually paste. So each example file marks the region that must appear in the
-// README with `// README:begin` / `// README:end`, and this compares them
-// verbatim.
-//
-// The only permitted difference is the import specifier, because an example
-// inside the repo imports from source while a reader imports the package.
+// Asserts that the code printed in a package README is the code CI compiles.
+// Examples mark the region with `// README:begin` / `// README:end`; the only
+// permitted difference is the import specifier.
 
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';

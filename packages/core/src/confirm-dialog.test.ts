@@ -36,7 +36,7 @@ describe('ConfirmDialogVM', () => {
     const vm = new ConfirmDialogVM(copy);
     const result = firstValueFrom(vm.result$);
     vm.confirm();
-    vm.cancel(); // ignored — already settled
+    vm.cancel(); // ignored: already settled
     expect(await result).toEqual({ kind: 'confirmed', value: undefined });
   });
 });

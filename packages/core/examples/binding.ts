@@ -1,5 +1,4 @@
-// The binding snippet in README.md. The view-model is only declared here: the
-// point is that subscribing is all a renderer has to do, not how it is built.
+// The binding snippet in README.md.
 import type { ErrorCollection } from '../src/index';
 import type { ContactSearchViewModel } from './readme';
 

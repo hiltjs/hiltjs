@@ -17,7 +17,7 @@ class HookSpyVM extends ViewModelBase {
   }
 }
 
-describe('ViewModelBase — lifecycle', () => {
+describe('ViewModelBase: lifecycle', () => {
   it('activate() is idempotent', async () => {
     const vm = new HookSpyVM();
     await vm.activate();
@@ -120,7 +120,7 @@ class PropsVM extends ViewModelBase {
   }
 }
 
-describe('ViewModelBase — propertyChanged$', () => {
+describe('ViewModelBase: propertyChanged$', () => {
   it('emits for tracked properties only, with name and value', () => {
     const vm = new PropsVM();
     const events: { name: string; value: unknown }[] = [];
@@ -165,7 +165,7 @@ describe('ViewModelBase — propertyChanged$', () => {
   });
 });
 
-describe('ViewModelBase — dispose cleans up tracked properties', () => {
+describe('ViewModelBase: dispose cleans up tracked properties', () => {
   it('completes tracked ReactiveProperty subjects', async () => {
     const vm = new PropsVM();
     let nameCompleted = false;
@@ -198,7 +198,7 @@ describe('ViewModelBase — dispose cleans up tracked properties', () => {
   });
 });
 
-describe('ViewModelBase — dirtyTracker factory', () => {
+describe('ViewModelBase: dirtyTracker factory', () => {
   it('wires cleanup so tracker.dispose runs on VM dispose', () => {
     class TrackerVM extends ViewModelBase {
       readonly name = this.property('name', 'a');
