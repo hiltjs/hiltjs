@@ -1,6 +1,6 @@
 {
   "name": "@hiltjs/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A small MVVM core for TypeScript: view-model lifecycle, commands, reactive properties, conductors and an event bus, built on RxJS.",
   "keywords": [
     "mvvm",
