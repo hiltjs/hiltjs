@@ -14,7 +14,7 @@ receives fixes; there are no maintained release branches yet.
 **Please do not open a public issue.**
 
 Use GitHub's private vulnerability reporting instead: go to the
-[Security tab](https://github.com/rick-dev-creator/hiltjs/security/advisories/new)
+[Security tab](https://github.com/hiltjs/hiltjs/security/advisories/new)
 and open a draft advisory. It is private between you and the maintainers, and it
 is the only channel monitored for this.
 

@@ -1,7 +1,7 @@
 # Hilt
 
 [![npm](https://img.shields.io/npm/v/@hiltjs/core?logo=npm&color=cb3837)](https://www.npmjs.com/package/@hiltjs/core)
-[![CI](https://github.com/rick-dev-creator/hiltjs/actions/workflows/ci.yml/badge.svg)](https://github.com/rick-dev-creator/hiltjs/actions/workflows/ci.yml)
+[![CI](https://github.com/hiltjs/hiltjs/actions/workflows/ci.yml/badge.svg)](https://github.com/hiltjs/hiltjs/actions/workflows/ci.yml)
 [![license](https://img.shields.io/npm/l/@hiltjs/core)](LICENSE)
 
 MVVM for TypeScript, taken seriously. Screens with a real lifecycle, commands that carry their own

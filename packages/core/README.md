@@ -10,7 +10,7 @@ comes from: Hilt is **inspired by [Caliburn.Micro](https://caliburnmicro.com/)**
 lifecycle contract over into TypeScript.
 
 [![npm](https://img.shields.io/npm/v/@hiltjs/core?logo=npm&color=cb3837)](https://www.npmjs.com/package/@hiltjs/core)
-[![CI](https://github.com/rick-dev-creator/hiltjs/actions/workflows/ci.yml/badge.svg)](https://github.com/rick-dev-creator/hiltjs/actions/workflows/ci.yml)
+[![CI](https://github.com/hiltjs/hiltjs/actions/workflows/ci.yml/badge.svg)](https://github.com/hiltjs/hiltjs/actions/workflows/ci.yml)
 
 > Not [Hilt for Android](https://dagger.dev/hilt/). Same word, different ecosystem.
 

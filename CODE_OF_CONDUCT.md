@@ -54,7 +54,7 @@ an individual is officially representing the community in public spaces.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the maintainers through GitHub's private reporting form at
-https://github.com/rick-dev-creator/hiltjs/security/advisories/new, which is
+https://github.com/hiltjs/hiltjs/security/advisories/new, which is
 private between you and the maintainers. All complaints will be reviewed and
 investigated promptly and fairly.
 

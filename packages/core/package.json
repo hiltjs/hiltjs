@@ -15,11 +15,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rick-dev-creator/hiltjs.git",
+    "url": "git+https://github.com/hiltjs/hiltjs.git",
     "directory": "packages/core"
   },
-  "bugs": "https://github.com/rick-dev-creator/hiltjs/issues",
-  "homepage": "https://github.com/rick-dev-creator/hiltjs#readme",
+  "bugs": "https://github.com/hiltjs/hiltjs/issues",
+  "homepage": "https://github.com/hiltjs/hiltjs#readme",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

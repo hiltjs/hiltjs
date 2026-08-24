@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
-  "changelog": ["@changesets/changelog-github", { "repo": "rick-dev-creator/hiltjs" }],
+  "changelog": ["@changesets/changelog-github", { "repo": "hiltjs/hiltjs" }],
   "commit": false,
   "fixed": [],
   "linked": [],
