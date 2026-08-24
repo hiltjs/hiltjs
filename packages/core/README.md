@@ -66,18 +66,18 @@ So this package depends on nothing that renders, and it never will.
 
 ### If you already know Caliburn.Micro
 
-| Caliburn.Micro | Hilt |
-| --- | --- |
-| `Screen`, `OnActivate` / `OnDeactivate` | `ViewModelBase`, `onActivate` / `onDeactivate` |
-| `IGuardClose.CanClose` | `canDeactivate()` |
-| `Conductor<T>.Collection.OneActive` | `ConductorOneActive<T>` |
-| `Conductor<T>.Collection.AllActive` | `ConductorAllActive<T>` |
-| `PropertyChangedBase`, `NotifyOfPropertyChange` | `ReactiveProperty<T>` |
-| `ICommand` + the `CanX` guard convention | `RelayCommand` / `AsyncCommand`, with `canExecute$` |
-| `IEventAggregator`, `IHandle<T>` | `EventBus`, `eventToken<T>()` |
-| `IWindowManager.ShowDialog` | `IDialogService` |
-| `ViewLocator` | `ViewLocator` (in `@hiltjs/react`) |
-| `SimpleContainer` + bootstrapper | `Token` + a container adapter |
+| Caliburn.Micro                                  | Hilt                                                |
+| ----------------------------------------------- | --------------------------------------------------- |
+| `Screen`, `OnActivate` / `OnDeactivate`         | `ViewModelBase`, `onActivate` / `onDeactivate`      |
+| `IGuardClose.CanClose`                          | `canDeactivate()`                                   |
+| `Conductor<T>.Collection.OneActive`             | `ConductorOneActive<T>`                             |
+| `Conductor<T>.Collection.AllActive`             | `ConductorAllActive<T>`                             |
+| `PropertyChangedBase`, `NotifyOfPropertyChange` | `ReactiveProperty<T>`                               |
+| `ICommand` + the `CanX` guard convention        | `RelayCommand` / `AsyncCommand`, with `canExecute$` |
+| `IEventAggregator`, `IHandle<T>`                | `EventBus`, `eventToken<T>()`                       |
+| `IWindowManager.ShowDialog`                     | `IDialogService`                                    |
+| `ViewLocator`                                   | `ViewLocator` (in `@hiltjs/react`)                  |
+| `SimpleContainer` + bootstrapper                | `Token` + a container adapter                       |
 
 Three differences worth knowing. Properties are explicit `ReactiveProperty` objects rather than a
 magic base class, because there is no `[CallerMemberName]` to lean on, and being explicit turned out
@@ -165,19 +165,19 @@ subscribe the way your renderer normally subscribes to an observable.
 
 ## What's in the box
 
-| | |
-| --- | --- |
-| **Lifecycle** | `ViewModel`, `ViewModelBase`, `DeactivationKind`, `PropertyChange` |
-| **Composition** | `Conductor`, `ConductorOneActive`, `ConductorAllActive` |
-| **State** | `ReactiveProperty`, `DirtyTracker` |
-| **Actions** | `Command`, `RelayCommand`, `AsyncCommand` |
-| **Results & errors** | `OperationResult`, `Ok`, `Fail`, `AppError`, `ErrorCollection` |
-| **Messaging** | `EventBus`, `RxEventBus`, `eventToken` |
-| **Notifications** | `VmNotification`, `VmNotificationKind` |
-| **Validation** | `Spec`, `all`, `any`, `not`, `matches`, `ValidationCode` |
-| **Seams** | `IDialogService`, `IRouteOverlayService`, `INavigationService`, `IActionConfirmer` |
-| **Progressive disclosure** | `IFoldViewModel`, `FoldSlot`, `assertFoldSlots` |
-| **Identity** | `Token`, `token` |
+|                            |                                                                                    |
+| -------------------------- | ---------------------------------------------------------------------------------- |
+| **Lifecycle**              | `ViewModel`, `ViewModelBase`, `DeactivationKind`, `PropertyChange`                 |
+| **Composition**            | `Conductor`, `ConductorOneActive`, `ConductorAllActive`                            |
+| **State**                  | `ReactiveProperty`, `DirtyTracker`                                                 |
+| **Actions**                | `Command`, `RelayCommand`, `AsyncCommand`                                          |
+| **Results & errors**       | `OperationResult`, `Ok`, `Fail`, `AppError`, `ErrorCollection`                     |
+| **Messaging**              | `EventBus`, `RxEventBus`, `eventToken`                                             |
+| **Notifications**          | `VmNotification`, `VmNotificationKind`                                             |
+| **Validation**             | `Spec`, `all`, `any`, `not`, `matches`, `ValidationCode`                           |
+| **Seams**                  | `IDialogService`, `IRouteOverlayService`, `INavigationService`, `IActionConfirmer` |
+| **Progressive disclosure** | `IFoldViewModel`, `FoldSlot`, `assertFoldSlots`                                    |
+| **Identity**               | `Token`, `token`                                                                   |
 
 ## Three rules it actually keeps
 

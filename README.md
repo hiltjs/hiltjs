@@ -40,11 +40,11 @@ The long version, with the code, is in [`packages/core/README.md`](packages/core
 
 ## Packages
 
-| Package | Status | |
-| --- | --- | --- |
-| [`@hiltjs/core`](packages/core) | `0.1` | The kernel. Lifecycle, commands, reactive properties, conductors, event bus, dialog and navigation seams. Depends only on RxJS. |
-| `@hiltjs/react` | extracting | React binding. Hooks, provider, view locator, dialog host. |
-| `@hiltjs/expo` | extracting | Expo Router adapter. VM-first navigation, route registry, transitions. |
+| Package                         | Status     |                                                                                                                                 |
+| ------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| [`@hiltjs/core`](packages/core) | `0.1`      | The kernel. Lifecycle, commands, reactive properties, conductors, event bus, dialog and navigation seams. Depends only on RxJS. |
+| `@hiltjs/react`                 | extracting | React binding. Hooks, provider, view locator, dialog host.                                                                      |
+| `@hiltjs/expo`                  | extracting | Expo Router adapter. VM-first navigation, route registry, transitions.                                                          |
 
 ## Why the packages arrive one at a time
 
@@ -88,6 +88,14 @@ left external, and both entry points actually importable.
    framework with an opinion instead of another state library: tests that fail when a view-model
    grows a shape it shouldn't, and a generator that scaffolds the canonical one. They exist. They
    currently encode one application's module structure, which is why they are last.
+
+## Contributing
+
+Issues describing a problem are welcome, and often more useful than a pull
+request fixing it a particular way while the shape of the project is still being
+decided. [CONTRIBUTING.md](CONTRIBUTING.md) covers the setup, the gate, and the
+rules the kernel keeps. Security issues go through
+[SECURITY.md](SECURITY.md), not the issue tracker.
 
 ## Stability
 

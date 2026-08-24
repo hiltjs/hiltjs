@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  # Required for npm provenance. Without it the packages still publish, but
+  # without the signed link back to the commit and workflow that produced them.
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          # The bundler needs 22.18+; see the note in ci.yml.
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - run: pnpm install --frozen-lockfile
+
+      # Publishing something that does not pass its own gate would be worse
+      # than not publishing at all.
+      - run: pnpm run check
+
+      # Two modes, decided by whether unreleased changesets exist:
+      #   - some exist   -> open or update the "Version Packages" pull request
+      #   - none exist   -> the version PR was merged, so publish
+      - uses: changesets/action@v1
+        with:
+          version: pnpm run version-packages
+          publish: pnpm run release
+          commit: 'Version packages'
+          title: 'Version packages'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true

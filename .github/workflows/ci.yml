@@ -29,9 +29,17 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Typechecks the sources AND the example printed in the README, so a
-      # stale snippet fails here rather than in someone's editor.
+      # Typechecks the sources AND the examples, so a snippet that no longer
+      # compiles fails here rather than in someone's editor.
       - run: pnpm run typecheck
+
+      - run: pnpm run lint
+
+      - run: pnpm run format:check
+
+      # Compiling the examples proves they are valid. This proves the READMEs
+      # actually print them, which is the part a reader copies.
+      - run: pnpm run check:examples
 
       - run: pnpm run test
 

@@ -1,0 +1,42 @@
+name: Proposal
+description: Suggest a change to the framework's shape or surface
+labels: [proposal]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: >
+        What are you trying to build, and where does the current surface get in
+        the way? Please describe the problem before the solution; the shape of
+        this project is still being decided and the problem is the useful part.
+    validations:
+      required: true
+
+  - type: textarea
+    id: today
+    attributes:
+      label: What you do today
+      description: How you work around it now, if you do.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you would like instead
+      description: A sketch is fine. It does not have to be a finished API.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints
+      description: >
+        The kernel imports nothing that renders, and everything in it must be
+        testable without a view. Proposals that require either are unlikely to
+        land as described, though the underlying problem is still worth hearing.
+      options:
+        - label: My proposal keeps the kernel free of any UI framework
+        - label: What I am proposing can be tested without mounting a view

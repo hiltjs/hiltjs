@@ -54,8 +54,7 @@ export interface IDialogViewModel<TResult> extends ViewModel {
 }
 
 export type DialogResult<T> =
-  | { readonly kind: 'confirmed'; readonly value: T }
-  | { readonly kind: 'cancelled' };
+  { readonly kind: 'confirmed'; readonly value: T } | { readonly kind: 'cancelled' };
 
 /**
  * Cross-cutting service for presenting dialogs from any VM. NOT a
@@ -111,9 +110,9 @@ export class DialogService implements IDialogService {
     }
     const vm = factory();
     await vm.activate();
-    // Cast widens TResult → unknown for storage on `active$`. The
-    // TResult type is recovered through the awaited `result$`.
-    this._active$.next(vm as IDialogViewModel<unknown>);
+    // Stored as `IDialogViewModel<unknown>`; the caller recovers TResult
+    // through the awaited `result$` below.
+    this._active$.next(vm);
     try {
       return await firstValueFrom(vm.result$);
     } finally {

@@ -53,12 +53,12 @@ describe('RelayCommand', () => {
   });
 
   it('rejects concurrent execute() with COMMAND.ALREADY_EXECUTING', async () => {
-    let proceed: (() => void) | undefined;
+    // Counts real invocations. The previous version of this test asserted on a
+    // variable nothing ever assigned, so it passed whether or not the handler
+    // ran; this one fails if it does.
+    let handlerRuns = 0;
     const cmd = new RelayCommand<void>(() => {
-      // proceed gate would normally be promise-based; for sync RelayCommand
-      // concurrent execution cannot be reproduced via real concurrency.
-      // We simulate by reading the flag mid-execution from a side channel.
-      proceed?.();
+      handlerRuns++;
     });
     // RelayCommand is sync, so the in-flight reject path is harder to hit
     // organically. Instead drive _isExecuting$ directly to simulate.
@@ -68,7 +68,7 @@ describe('RelayCommand', () => {
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.errors.errors[0]?.code).toBe('COMMAND.ALREADY_EXECUTING');
     cmdAny._isExecuting$.next(false);
-    expect(proceed).toBeUndefined(); // handler never ran (gate flipped externally)
+    expect(handlerRuns).toBe(0); // handler never ran (gate flipped externally)
   });
 
   it('canExecute$ reflects external gate AND !isExecuting', async () => {
@@ -236,7 +236,7 @@ describe('AsyncCommand', () => {
       { concurrency: 'switch' },
     );
     const p1 = cmd.execute();
-    cmd.execute(); // triggers abort on p1
+    void cmd.execute(); // triggers abort on p1
     const r1 = await p1;
     expect(r1.ok).toBe(false);
     if (!r1.ok) expect(r1.errors.errors[0]?.code).toBe('COMMAND.ABORTED');
